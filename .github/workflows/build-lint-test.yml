@@ -25,14 +25,17 @@ jobs:
         uses: actions/cache@v4
         with:
           path: |
-            ~/.cargo
-            target
+            ~/.cargo/.crates.toml
+            ~/.cargo/.crates2.json
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: ${{ runner.os }}-cargo-
-      - name: Install cargo-binstall
-        uses: cargo-bins/cargo-binstall@main
       - name: Install sqlx-cli
-        run: cargo binstall sqlx-cli --no-confirm
+        run: cargo binstall sqlx-cli --no-default-features --features sqlite
       - name: Create database and run migrations
         run: sqlx database setup
       - name: Check rustfmt
@@ -42,7 +45,7 @@ jobs:
       - name: Run tests
         run: cargo --verbose --locked test
       - name: Build
-        run: cargo --verbose --locked build --release
+        run: cargo --verbose --locked build
   frontend:
     name: Frontend
     runs-on: ubuntu-latest
