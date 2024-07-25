@@ -28,8 +28,8 @@ jobs:
             ~/.cargo
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: ${{ runner.os }}-cargo-
-      - name: Install cargo binstall
-        run: cargo install cargo-binstall
+      - name: Install cargo-binstall
+        uses: cargo-bins/cargo-binstall@main
       - name: Install sqlx-cli
         run: cargo binstall sqlx-cli --no-default-features --features sqlite
       - name: Create database and run migrations
