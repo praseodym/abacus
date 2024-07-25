@@ -41,7 +41,7 @@ jobs:
       - name: Run tests
         run: cargo --verbose --locked test
       - name: Build
-        run: cargo --verbose --locked build
+        run: cargo --verbose --locked build --release
   frontend:
     name: Frontend
     runs-on: ubuntu-latest
