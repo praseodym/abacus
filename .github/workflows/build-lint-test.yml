@@ -32,7 +32,7 @@ jobs:
       - name: Install cargo-binstall
         uses: cargo-bins/cargo-binstall@main
       - name: Install sqlx-cli
-        run: cargo binstall sqlx-cli
+        run: cargo binstall sqlx-cli --no-confirm
       - name: Create database and run migrations
         run: sqlx database setup
       - name: Check rustfmt
