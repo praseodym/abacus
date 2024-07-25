@@ -25,8 +25,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: |
-            ~/.cargo/
-            target/
+            ~/.cargo
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: ${{ runner.os }}-cargo-s
       - name: Install sqlx-cli
