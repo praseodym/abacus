@@ -35,7 +35,7 @@ jobs:
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: ${{ runner.os }}-cargo-
       - name: Install sqlx-cli
-        run: cargo binstall sqlx-cli --no-default-features --features sqlite
+        run: cargo install sqlx-cli --no-default-features --features sqlite
       - name: Create database and run migrations
         run: sqlx database setup
       - name: Check rustfmt
