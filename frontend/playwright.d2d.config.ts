@@ -11,7 +11,7 @@ function returnWebserverCommand(): string {
     // LOCAL CI: build frontend, build backend, reset and seed playwright-specific database
     return `npm run build &&
       cd ../backend &&
-      cargo build &&
+      cargo build --features memory-serve  &&
       target/debug/api --database target/debug/playwright.sqlite --reset-database --seed-data --port 8081`;
   } else {
     // DEV: expects frontend build, backend build, playwright-specific database setup/seeding to have been done
