@@ -1,0 +1,129 @@
+name: Build, lint & test
+
+on:
+  workflow_dispatch:
+  pull_request:
+  merge_group:
+    types: [checks_requested]
+
+env:
+  CARGO_TERM_COLOR: always
+  ASSET_DIR: ${{ github.workspace }}/frontend/dist
+  SQLX_OFFLINE: "true"
+
+jobs:
+  backend:
+    name: Backend
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    defaults:
+      run:
+        working-directory: ./backend
+    steps:
+      - uses: actions/checkout@v4
+      # Build frontend so that it can be included in the backend build
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install dependencies
+        run: npm ci
+        working-directory: ./frontend
+      - name: Build
+        run: npm run build
+        working-directory: ./frontend
+      # Compile and test backend
+      - name: Setup Rust
+        run: rustup update stable && rustup default stable
+      - name: Cargo cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/.crates.toml
+            ~/.cargo/.crates2.json
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            ./backend/target/
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: ${{ runner.os }}-cargo-
+      - name: Check rustfmt
+        run: cargo --verbose --locked fmt --all -- --check
+      - name: Check Clippy with all features
+        run: cargo --verbose --locked clippy --all-targets --all-features -- -D warnings
+      - name: Check Clippy without default features
+        run: cargo --verbose --locked clippy --all-targets --no-default-features -- -D warnings
+      - name: Run tests
+        run: cargo --verbose --locked test
+      - name: Build
+        run: cargo --verbose --locked build --features memory-serve
+      - uses: actions/upload-artifact@v4
+        with:
+          name: backend-build
+          path: backend/target/debug/api
+  frontend:
+    name: Frontend
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install dependencies
+        run: npm ci
+      - name: Check formatting
+        run: npx prettier --check .
+      - name: Lint
+        run: npm run lint
+      - name: Test
+        run: npm test
+      - name: Build
+        run: npm run build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: frontend-build
+          path: frontend/dist
+  playwright:
+    name: Playwright
+    needs:
+      - backend # frontend is included in backend build
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install npm dependencies
+        run: npm ci
+      - name: Install Playwright
+        run: npx playwright install --with-deps
+      - name: Run UI e2e tests
+        run: npm run e2e:lib-ui
+      - name: Run app e2e tests
+        run: npm run e2e:app
+      - name: Download backend-build
+        uses: actions/download-artifact@v4
+        with:
+          name: backend-build
+          path: builds/backend
+      - name: make backend build executable
+        run: chmod a+x ../builds/backend/api
+      - name: Run DOM to Database e2e tests
+        run: npm run e2e:d2d
