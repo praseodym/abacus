@@ -138,13 +138,14 @@ jobs:
       - name: Run app e2e tests
         run: npm run e2e:app
   playwright-d2d:
-    name: Playwright d2d tests (${{ matrix.os }}, ${{ matrix.shard }}/${{ strategy.job-total }})
+    name: Playwright d2d tests (${{ matrix.os }}, ${{ matrix.shardIndex }}/${{ matrix.shardTotal }})
     needs:
       - backend # frontend is included in backend build
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        shard: [1, 2, 3]
+        shardIndex: [1, 2, 3]
+        shardTotal: [3]
     runs-on: ${{ matrix.os }}
     defaults:
       run:
@@ -167,4 +168,4 @@ jobs:
       - name: make backend build executable
         run: chmod a+x ../builds/backend/${{ runner.os == 'Windows' && 'abacus.exe' || 'abacus' }}
       - name: Run DOM to Database e2e tests
-        run: npm run e2e:d2d -- --shard=${{ matrix.shard }}/${{ strategy.job-total }}
+        run: npm run e2e:d2d -- --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
