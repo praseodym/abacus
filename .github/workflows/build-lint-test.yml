@@ -164,7 +164,7 @@ jobs:
         with:
           name: backend-build-${{ matrix.os }}
           path: builds/backend
-#      - name: make backend build executable
-#        run: chmod a+x ../builds/backend/${{ runner.os == 'Windows' && 'abacus.exe' || 'abacus' }}
+      - name: make backend build executable
+        run: chmod a+x ../builds/backend/${{ runner.os == 'Windows' && 'abacus.exe' || 'abacus' }}
       - name: Run DOM to Database e2e tests
         run: npm run e2e:d2d -- --shard=${{ matrix.shard }}/${{ strategy.job-total }}
