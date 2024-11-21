@@ -138,7 +138,7 @@ jobs:
       - name: Run app e2e tests
         run: npm run e2e:app
   playwright-d2d:
-    name: Playwright d2d tests (${{ matrix.shard }}/${{ strategy.job-total }})
+    name: Playwright d2d tests (${{ matrix.os }}, ${{ matrix.shard }}/${{ strategy.job-total }})
     needs:
       - backend # frontend is included in backend build
     strategy:
