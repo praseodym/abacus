@@ -14,7 +14,10 @@ env:
 jobs:
   backend:
     name: Backend
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
     defaults:
       run:
         working-directory: ./backend
@@ -59,12 +62,15 @@ jobs:
         run: cargo --verbose --locked build --features memory-serve
       - uses: actions/upload-artifact@v4
         with:
-          name: backend-build
-          path: backend/target/debug/abacus
+          name: backend-build-${{ matrix.os }}
+          path: ${{ runner.os == 'Windows' && 'backend/target/debug/abacus.exe' || 'backend/target/debug/abacus' }}
   
   frontend:
     name: Frontend
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
     defaults:
       run:
         working-directory: frontend
@@ -86,12 +92,15 @@ jobs:
         run: npm run build
       - uses: actions/upload-artifact@v4
         with:
-          name: frontend-build
+          name: frontend-build-${{ matrix.os }}
           path: frontend/dist
 
   playwright-ui:
     name: Playwright UI tests
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
     defaults:
       run:
         working-directory: frontend
@@ -109,7 +118,10 @@ jobs:
         run: npm run e2e:lib-ui
   playwright-app:
     name: Playwright app tests
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
     defaults:
       run:
         working-directory: frontend
@@ -131,8 +143,9 @@ jobs:
       - backend # frontend is included in backend build
     strategy:
       matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
         shard: [1, 2, 3]
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     defaults:
       run:
         working-directory: frontend
