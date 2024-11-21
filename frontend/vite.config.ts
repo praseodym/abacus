@@ -79,7 +79,7 @@ export default defineConfig(({ command }) => {
       environment: "jsdom",
       setupFiles: ["app/test/unit/setup.ts"],
       includeSource: ["app/**/*.ts", "lib/**/*.ts"],
-      testTimeout: process.platform === "win32" ? 10_000 : 5_000,
+      testTimeout: process.platform === "win32" ? 15_000 : 5_000,
     },
   } satisfies UserConfig;
 });
