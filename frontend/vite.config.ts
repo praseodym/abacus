@@ -79,7 +79,6 @@ export default defineConfig(({ command }) => {
       environment: "jsdom",
       setupFiles: ["app/test/unit/setup.ts"],
       includeSource: ["app/**/*.ts", "lib/**/*.ts"],
-      testTimeout: 30_000,
     },
   } satisfies UserConfig;
 });
