@@ -39,9 +39,10 @@ jobs:
         working-directory: ./frontend
       # Compile and test backend
       - name: Setup Rust
-        run: rustup update stable && \
-             rustup default stable && \
-             echo RUST_VERSION=$(rustc --version | cut -d' ' -f2) >> $GITHUB_ENV
+        run: >
+          rustup update stable && \
+          rustup default stable && \
+          echo RUST_VERSION=$(rustc --version | cut -d' ' -f2) >> $GITHUB_ENV
       - name: Cargo cache
         uses: actions/cache@v4
         with:
