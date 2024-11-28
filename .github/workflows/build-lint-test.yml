@@ -39,7 +39,9 @@ jobs:
         working-directory: ./frontend
       # Compile and test backend
       - name: Setup Rust
-        run: rustup update stable && rustup default stable
+        run: rustup update stable && \
+             rustup default stable && \
+             echo RUST_VERSION=$(rustc --version | cut -d' ' -f2) >> $GITHUB_ENV
       - name: Cargo cache
         uses: actions/cache@v4
         with:
@@ -51,7 +53,7 @@ jobs:
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
             ./backend/target/
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          key: ${{ runner.os }}-cargo-${{ env.RUST_VERSION }}-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: ${{ runner.os }}-cargo-
       - name: Check rustfmt
         run: cargo --verbose --locked fmt --all -- --check
