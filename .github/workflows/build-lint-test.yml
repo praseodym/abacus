@@ -74,7 +74,7 @@ jobs:
   
   frontend:
     name: Frontend
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     defaults:
       run:
         working-directory: frontend
@@ -103,7 +103,7 @@ jobs:
     name: Playwright UI tests
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [ubuntu-24.04, windows-latest, macos-latest]
     runs-on: ${{ matrix.os }}
     defaults:
       run:
@@ -124,7 +124,7 @@ jobs:
     name: Playwright app tests
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [ubuntu-24.04, windows-latest, macos-latest]
     runs-on: ${{ matrix.os }}
     defaults:
       run:
@@ -147,7 +147,7 @@ jobs:
       - backend # frontend is included in backend build
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [ubuntu-24.04, windows-latest, macos-latest]
         shardIndex: [1, 2, 3]
         shardTotal: [3]
     runs-on: ${{ matrix.os }}
