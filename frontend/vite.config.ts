@@ -94,6 +94,7 @@ export default defineConfig(({ command }) => {
           "*.config.mjs",
           "mockServiceWorker.js",
           "e2e-tests/**",
+          "scripts/**",
           ...coverageConfigDefaults.exclude,
         ],
       },
