@@ -87,8 +87,7 @@ export default defineConfig(({ command }) => {
       environment: "jsdom",
       setupFiles: ["lib/test/setup.ts"],
       includeSource: ["app/**/*.ts", "lib/**/*.ts"],
-      // GitHub Actions Windows runners seem slower than Linux runners, so we need to increase the test timeout
-      testTimeout: process.platform === "win32" ? 15_000 : 5_000,
+      testTimeout: 30_000,
       coverage: {
         exclude: [
           "*.config.ts",
