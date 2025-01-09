@@ -7,9 +7,52 @@ on:
     branches:
       - main
 
+env:
+  CARGO_TERM_COLOR: always
+  SQLX_OFFLINE: "true"
+
 jobs:
+  backend:
+    name: Rust
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Setup Rust
+        shell: bash
+        run: >
+          rustup update nightly &&
+          rustup default nightly &&
+          echo RUST_VERSION=$(rustc --version | cut -d' ' -f2) >> $GITHUB_ENV
+      - name: Install Tarpaulin
+        run: cargo --locked install cargo-tarpaulin
+      - name: Cargo cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/.crates.toml
+            ~/.cargo/.crates2.json
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            ./backend/target/
+          key: ${{ runner.os }}-cargo-${{ env.RUST_VERSION }}-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: ${{ runner.os }}-cargo-${{ env.RUST_VERSION }}-
+      - name: Generate code coverage
+        run: cargo --verbose --locked tarpaulin --timeout 120 --out xml
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+
   frontend:
-    name: Frontend
+    name: Vitest
     runs-on: ubuntu-latest
     defaults:
       run:
