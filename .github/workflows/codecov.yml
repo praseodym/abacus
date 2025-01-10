@@ -13,7 +13,7 @@ env:
 
 jobs:
   backend:
-    name: Rust
+    name: Backend
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -63,7 +63,7 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
 
   frontend:
-    name: Vitest
+    name: Frontend
     runs-on: ubuntu-latest
     defaults:
       run:
