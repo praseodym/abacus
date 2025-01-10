@@ -28,7 +28,7 @@ jobs:
         run: >
           rustup update nightly &&
           rustup default nightly &&
-          echo RUST_VERSION=$(rustc --version | cut -d' ' -f2) >> $GITHUB_ENV
+          echo RUST_VERSION=$(rustc --version | awk -F '[( ]' '{print $4}') >> $GITHUB_ENV
       - name: Install Binstall
         run: curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash
       - name: Install Tarpaulin
@@ -39,7 +39,6 @@ jobs:
           path: |
             ~/.cargo/.crates.toml
             ~/.cargo/.crates2.json
-            ~/.cargo/bin/
             ~/.cargo/registry/index/
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
