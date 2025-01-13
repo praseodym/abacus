@@ -164,27 +164,25 @@ languages:
 
   - name: "typescript"
     production:
-      include:
-        - ".*NotAvailableInMock.tsx"
-        - ".*/lib/api-mocks/.*[.]ts"
-        - ".*/lib/api-mocks/.*[.]tsx"
-      exclude:
-        - ".*MockData.ts"
     test:
       include:
-        - ".*[.]e2e[.]ts"
+      - ".*NotAvailableInMock[.]tsx"
+      - ".*/lib/api-mocks/.*[.]ts"
+      - ".*/lib/api-mocks/.*[.]tsx"
+      - ".*[.]e2e[.]ts"
+      - ".*.stories[.]tsx"
     generated:
       include:
-        - ".*/gen/.*[.]ts"
+      - ".*/gen/.*[.]ts"
 
 
 exclude:
+  - ".*/backend/[.]sqlx/.*"
   - ".*/frontend/app/component/MockTest[.]tsx"
+  - ".*/frontend/lib/icon/.*"
   - ".*/[.]ladle.*"
   - ".*[.]d[.]ts"
-  - ".*/frontend/lib/icon/.*"
   - ".*[.]config[.]ts"
-  - ".*/migrations/.*"
 
 dependencychecker:
   blocklist:
