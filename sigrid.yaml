@@ -51,20 +51,20 @@ components:
       - ".*/backend/tests/.*"
 
   # Frontend components
-  - name: "(Frontend) app root files"
+  - name: "(Frontend) App Root Files"
     include:
       - ".*/frontend/app/app.test.ts"
       - ".*/frontend/app/main.tsx"
       - ".*/frontend/app/msw-mock-api.ts"
       - ".*/frontend/app/routes.test.tsx"
       - ".*/frontend/app/routes.tsx"
-  - name: "(Frontend) app/component/election"
+  - name: "(Frontend) Components/election"
     include:
       - ".*/frontend/app/component/election/.*"
-  - name: "(Frontend) app/component/error"
+  - name: "(Frontend) Components/error"
     include:
       - ".*/frontend/app/component/error/.*"
-  - name: "(Frontend) app/component/footer"
+  - name: "(Frontend) Components/footer"
     include:
       - ".*/frontend/app/component/footer/.*"
   - name: "(Frontend) app/component/form/data_entry"
@@ -80,11 +80,11 @@ components:
   - name: "(Frontend) app/component/form/user"
     include:
       - ".*/frontend/app/component/form/user/.*"
-  - name: "(Frontend) app/component/navbar"
+  - name: "(Frontend) Components/navbar"
     include:
       - ".*/frontend/app/component/navbar/.*"
 
-  - name: "(Frontend) module root files"
+  - name: "(Frontend) Modules/Root files"
     include:
       - ".*/frontend/app/module/AdministratorLayout.tsx"
       - ".*/frontend/app/module/DevHomePage.tsx"
@@ -92,44 +92,44 @@ components:
       - ".*/frontend/app/module/NotAvailableInMock.tsx"
       - ".*/frontend/app/module/NotFound.tsx"
       - ".*/frontend/app/module/RootLayout.tsx"
-  - name: "(Frontend) module/account"
+  - name: "(Frontend) Modules/account"
     include:
       - ".*/frontend/app/module/account/.*"
-  - name: "(Frontend) module/data_entry"
+  - name: "(Frontend) Modules/data_entry"
     include:
       - ".*/frontend/app/module/data_entry/.*"
-  - name: "(Frontend) module/election"
+  - name: "(Frontend) Modules/election"
     include:
       - ".*/frontend/app/module/election/.*"
-  - name: "(Frontend) module/logs"
+  - name: "(Frontend) Modules/logs"
     include:
       - ".*/frontend/app/module/logs/.*"
-  - name: "(Frontend) module/polling_stations"
+  - name: "(Frontend) Modules/polling_stations"
     include:
       - ".*/frontend/app/module/polling_stations/.*"
-  - name: "(Frontend) module/users"
+  - name: "(Frontend) Modules/users"
     include:
       - ".*/frontend/app/module/users/.*"
-  - name: "(Frontend) module/workstations"
+  - name: "(Frontend) Modules/workstations"
     include:
       - ".*/frontend/app/module/workstations/.*"
 
-  - name: "(Frontend) lib/api"
+  - name: "(Frontend) Lib/API"
     include:
       - ".*/frontend/lib/api/.*"
-  - name: "(Frontend) lib/api-mocks"
+  - name: "(Frontend) lib/API-Mocks"
     include:
       - ".*/frontend/lib/api-mocks/.*"
-  - name: "(Frontend) lib/i18n"
+  - name: "(Frontend) Lib/i18n"
     include:
       - ".*/frontend/lib/i18n/.*"
-  - name: "(Frontend) lib/test"
+  - name: "(Frontend) Unit tests"
     include:
       - ".*/frontend/lib/test/.*"
-  - name: "(Frontend) lib/ui"
+  - name: "(Frontend) Lib/UI"
     include:
       - ".*/frontend/lib/ui/.*"
-  - name: "(Frontend) lib/util"
+  - name: "(Frontend) Lib/Util"
     include:
       - ".*/frontend/lib/util/.*"
 
