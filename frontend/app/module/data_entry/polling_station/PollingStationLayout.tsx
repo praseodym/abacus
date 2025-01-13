@@ -1,8 +1,6 @@
 import { Link, Outlet } from "react-router";
 
 import { NavBar } from "app/component/navbar/NavBar";
-import { PollingStationFormNavigation } from "app/component/pollingstation/PollingStationFormNavigation";
-import { PollingStationProgress } from "app/component/pollingstation/PollingStationProgress";
 import { AbortDataEntryControl } from "app/module/data_entry";
 
 import { NotFoundError, useElection } from "@kiesraad/api";
@@ -12,6 +10,8 @@ import { Badge, PageTitle, PollingStationNumber, StickyNav, WorkStationNumber } 
 import { useNumericParam, usePollingStationStatus } from "@kiesraad/util";
 
 import { PollingStationFormController } from "../../../component/form/data_entry/PollingStationFormController";
+import { PollingStationFormNavigation } from "../../../component/form/data_entry/PollingStationFormNavigation";
+import { PollingStationProgress } from "../../../component/form/data_entry/PollingStationProgress";
 
 export function PollingStationLayout() {
   const pollingStationId = useNumericParam("pollingStationId");

@@ -1,8 +1,6 @@
 import * as React from "react";
 import { useLocation, useNavigate } from "react-router";
 
-import { getBaseUrl, getUrlForFormSectionID } from "app/component/pollingstation/utils";
-
 import {
   ApiError,
   ApiResult,
@@ -28,6 +26,7 @@ import {
   getNextSectionID,
   updateFormStateAfterSubmit,
 } from "./pollingStationUtils";
+import { getBaseUrl, getUrlForFormSectionID } from "./utils";
 
 export interface PollingStationFormControllerProps {
   election: Required<Election>;

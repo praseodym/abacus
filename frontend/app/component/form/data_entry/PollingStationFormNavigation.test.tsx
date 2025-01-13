@@ -1,10 +1,9 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, test, vi } from "vitest";
 
-import { defaultFormState, emptyDataEntryRequest } from "app/component/form/testHelperFunctions";
-
 import { electionMockData } from "@kiesraad/api-mocks";
 
+import { defaultFormState, emptyDataEntryRequest } from "../testHelperFunctions";
 import { PollingStationFormNavigation } from "./PollingStationFormNavigation";
 
 const mocks = vi.hoisted(() => ({
@@ -21,7 +20,7 @@ vi.mock("react-router", () => ({
   createRoutesFromElements: vi.fn(),
 }));
 
-vi.mock("../form/data_entry/usePollingStationFormController", () => ({
+vi.mock("./usePollingStationFormController", () => ({
   usePollingStationFormController: mocks.usePollingStationFormController,
 }));
 

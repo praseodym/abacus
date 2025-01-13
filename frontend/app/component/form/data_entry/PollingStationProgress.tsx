@@ -5,9 +5,9 @@ import { useElection } from "@kiesraad/api";
 import { t } from "@kiesraad/i18n";
 import { MenuStatus, ProgressList } from "@kiesraad/ui";
 
-import { FormSection, FormSectionID } from "../form/data_entry/PollingStationFormController";
-import { isFormSectionEmpty } from "../form/data_entry/pollingStationUtils";
-import { usePollingStationFormController } from "../form/data_entry/usePollingStationFormController";
+import { FormSection, FormSectionID } from "./PollingStationFormController";
+import { isFormSectionEmpty } from "./pollingStationUtils";
+import { usePollingStationFormController } from "./usePollingStationFormController";
 
 export function PollingStationProgress() {
   const { pollingStationId } = useParams();
