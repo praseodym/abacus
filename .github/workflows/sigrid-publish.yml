@@ -1,6 +1,5 @@
-name: Publish to Sigrid
+name: Sigrid Publish
 on:
-  workflow_dispatch:
   push:
     branches:
       - main
