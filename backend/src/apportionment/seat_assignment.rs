@@ -941,6 +941,23 @@ pub fn get_total_seats_from_apportionment_result(result: &SeatAssignmentResult) 
         .collect::<Vec<_>>()
 }
 
+#[cfg(fuzzing)]
+impl SeatAssignmentResult {
+    pub fn get_total_seats(&self) -> Vec<u32> {
+        self.final_standing
+            .iter()
+            .map(|p| p.total_seats)
+            .collect::<Vec<_>>()
+    }
+
+    pub fn get_residual_seats(&self) -> Vec<u32> {
+        self.final_standing
+            .iter()
+            .map(|p| p.residual_seats)
+            .collect::<Vec<_>>()
+    }
+}
+
 #[cfg(test)]
 mod tests {
     /// Tests apportionment for councils with less than 19 seats
