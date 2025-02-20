@@ -6,7 +6,7 @@ on:
 
 jobs:
   sigridci:
-    if: "!github.event.push.repository.fork"
+    if: github.repository == 'kiesraad/abacus'
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
