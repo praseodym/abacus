@@ -1927,4 +1927,124 @@ mod tests {
             }
         }
     }
+
+    mod discovered_tests {
+        use crate::apportionment::{
+            get_total_seats_from_apportionment_result, seat_assignment,
+            test_helpers::election_summary_fixture_with_default_50_candidates,
+            test_helpers::election_summary_fixture_with_given_candidate_votes,
+        };
+        use test_log::test;
+        #[test]
+        fn my_test() {
+            let totals = election_summary_fixture_with_default_50_candidates(vec![
+                19858427, 0, 50397184, 511, 16777727, 0, 0, 0, 0, 65791, 65787, 0, 0, 0, 65791,
+                133631, 17301755, 0, 0, 65791, 65787, 0, 0, 0, 0, 0, 255, 0, 0, 0, 65791, 65787, 0,
+                133631, 17301755, 0, 33357824, 0, 0, 0, 16777467, 0, 0, 0, 0, 16777727, 0, 0, 0, 0,
+                65791, 511, 0, 0, 0, 0, 0, 65791, 65787, 16777216, 0, 0, 0, 0, 0, 0, 65791, 65787,
+                0, 0, 511, 0, 0, 0, 0, 0, 0, 65791, 65787, 0, 0, 0, 65791, 133631, 17301755, 0, 0,
+                0, 65791, 65787, 0, 133631, 17301755, 0, 33357824, 0, 0, 0, 16777467, 0, 0, 0, 0,
+                16777727, 0, 0, 0, 0, 65791, 511, 0, 0, 0, 0, 255, 0, 0, 16777215, 65791, 65787,
+                16777216, 0, 0, 0, 0, 0, 0, 16777467, 0, 0, 0, 0, 16777727, 0, 0, 0, 0, 16843007,
+                0, 0, 0, 0, 65791, 65787, 0, 0, 511, 0, 0, 0, 133376, 17301755, 0, 33488896, 0, 0,
+                0, 16777467, 0, 0, 0, 0, 255, 0, 0, 0, 65791, 65787, 16777216, 0, 0, 0, 16777467,
+                0, 0, 0, 0, 16777473, 0, 0, 0, 0, 65791, 65787, 0, 0, 511, 0, 0, 0, 255, 0, 0, 0,
+                65791, 65787, 0, 133631, 17301755, 0, 33357824, 0, 0, 0, 16777467, 0, 0, 0, 0,
+                16777727, 0, 0, 0, 0, 65791, 511, 0, 0, 0, 0, 255, 0, 0, 0, 65791, 65787, 16777216,
+                0, 0, 0, 0, 0, 0, 65791, 65787, 0, 0, 0, 0, 255, 0, 16777216, 0, 0, 0, 16777467, 0,
+                0, 0, 0, 16777727, 0, 0, 0, 0, 16843007, 0, 0, 0, 0, 65791, 65787, 0, 0, 511, 0, 0,
+                0, 133376, 17301755, 0, 33488896, 0, 0, 0, 16777467, 0, 0, 0, 0, 255, 0, 0, 0,
+                65791,
+            ]);
+            let result = seat_assignment(18, &totals).unwrap();
+            let total_seats = get_total_seats_from_apportionment_result(&result);
+            assert_eq!(18, total_seats.iter().sum::<u32>());
+        }
+
+        #[test]
+        fn my_test_differential() {
+            let totals = election_summary_fixture_with_default_50_candidates(vec![
+                1572868, 2686980, 18427634, 17901042, 17498112, 11, 2686980, 2686980, 32976626,
+                185273330,
+            ]);
+            let result = seat_assignment(11, &totals).unwrap();
+            let total_seats = get_total_seats_from_apportionment_result(&result);
+            assert!(total_seats.iter().eq([0, 0, 0, 0, 0, 0, 0, 0, 2, 9].iter()));
+        }
+
+        #[test]
+        fn my_test_differential_minimized() {
+            let totals = election_summary_fixture_with_default_50_candidates(vec![
+                2712886, 18427634, 17901042, 17498112, 32964612, 185273330,
+            ]);
+            let result = seat_assignment(11, &totals).unwrap();
+            let total_seats = get_total_seats_from_apportionment_result(&result);
+            assert!(total_seats.iter().eq([0, 0, 0, 0, 2, 9].iter()));
+        }
+
+        #[test]
+        fn my_test_saba() {
+            let totals = election_summary_fixture_with_default_50_candidates(vec![777, 127, 81]);
+            let result = seat_assignment(5, &totals).unwrap();
+            let total_seats = get_total_seats_from_apportionment_result(&result);
+            assert!(total_seats.iter().eq([5, 0, 0].iter()));
+        }
+
+        #[test]
+        fn strange_allocation() {
+            let totals = election_summary_fixture_with_given_candidate_votes(vec![
+                vec![1684, 1684, 5052, 5052, 132],
+                vec![5039, 5054, 5052],
+                vec![0],
+            ]);
+            let result = seat_assignment(8, &totals).unwrap();
+            let total_seats = get_total_seats_from_apportionment_result(&result);
+            assert_eq!(total_seats, [5, 3, 0]);
+        }
+
+        #[test_log::test]
+        fn stranger_still_allocation() {
+            let totals = election_summary_fixture_with_given_candidate_votes(vec![
+                vec![32, 0, 0],
+                vec![11, 0, 0],
+                vec![9, 0, 0],
+                vec![8, 0, 0],
+            ]);
+            let result = seat_assignment(6, &totals).unwrap();
+            let total_seats = get_total_seats_from_apportionment_result(&result);
+            assert_eq!(total_seats, [3, 1, 1, 1]);
+        }
+
+        #[test]
+        fn enkhuizer_allocation() {
+            let totals = election_summary_fixture_with_given_candidate_votes(vec![
+                vec![1116, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                vec![485, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                vec![832, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                vec![658, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                vec![601, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                vec![649, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                vec![606, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                vec![326, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                vec![1184, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                vec![716],
+                vec![380, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            ]);
+            let result = seat_assignment(17, &totals).unwrap();
+            let total_seats = get_total_seats_from_apportionment_result(&result);
+            assert_eq!(total_seats, [3, 1, 2, 2, 1, 2, 1, 0, 3, 1, 1]);
+        }
+
+        #[test]
+        fn should_not_need_ballots() {
+            let totals = election_summary_fixture_with_given_candidate_votes(vec![
+                vec![2],
+                vec![2],
+                vec![1],
+            ]);
+            let result = seat_assignment(3, &totals).unwrap();
+            let total_seats = get_total_seats_from_apportionment_result(&result);
+            assert_eq!(total_seats, [1, 1, 1]);
+        }
+    }
 }
