@@ -39,7 +39,7 @@ pub struct PoliticalGroupSeatAssignment {
     /// The number of residual seats assigned to this group
     residual_seats: u32,
     /// The total number of seats assigned to this group
-    pub total_seats: u32,
+    total_seats: u32,
 }
 
 impl From<PoliticalGroupStanding> for PoliticalGroupSeatAssignment {
