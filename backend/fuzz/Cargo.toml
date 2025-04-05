@@ -68,3 +68,7 @@ path = "fuzz_targets/differential_python.rs"
 test = false
 doc = false
 bench = false
+
+[features]
+odd-only = []
+simplified =[]

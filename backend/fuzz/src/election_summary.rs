@@ -25,12 +25,27 @@ impl std::fmt::Debug for FuzzedElectionSummary {
 
 impl<'a> Arbitrary<'a> for FuzzedElectionSummary {
     fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
-        let votes = Vec::<Vec<Count>>::arbitrary(u)?;
+        let votes = if cfg!(feature = "simplified") {
+            Vec::<(Count, NonZero<u8>)>::arbitrary(u)?
+                .into_iter()
+                .map(|(v, n)| {
+                    let mut list = vec![0; n.get().into()];
+                    list[0] = v;
+                    list
+                })
+                .collect()
+        } else {
+            Vec::<Vec<Count>>::arbitrary(u)?
+        };
+
         if votes.len() == 0 || votes.len() > 1000 {
             return Err(Error::IncorrectFormat);
         }
 
-        let total_votes: u64 = votes.iter().map(|v| u64::from(v.iter().cloned().map(u64::from).sum::<u64>())).sum();
+        let total_votes: u64 = votes
+            .iter()
+            .map(|v| u64::from(v.iter().cloned().map(u64::from).sum::<u64>()))
+            .sum();
         if total_votes == 0 || total_votes > 1_000_000_000 {
             return Err(Error::IncorrectFormat);
         }
@@ -49,8 +64,14 @@ impl<'a> Arbitrary<'a> for FuzzedElectionSummary {
         let total_votes_cast_count =
             total_votes + blank_votes_count as Count + invalid_votes_count as Count;
 
+        let seats = if cfg!(feature = "odd-only") {
+            u32::from(u16::arbitrary(u)?) * 2 + 1
+        } else {
+            NonZero::<u16>::arbitrary(u)?.get().into() // 0 seats is not allowed (would give divide by 0 errors)
+        };
+
         Ok(FuzzedElectionSummary {
-            seats: NonZero::<u16>::arbitrary(u)?.get().into(), // 0 seats is not allowed (would give divide by 0 errors)
+            seats,
             votes,
             total_votes,
             election_summary: ElectionSummary {
