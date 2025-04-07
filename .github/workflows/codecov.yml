@@ -35,6 +35,7 @@ jobs:
         uses: Swatinem/rust-cache@v2
         with:
           workspaces: "backend -> target"
+          cache-bin: "false"
       - name: Install Binstall
         uses: cargo-bins/cargo-binstall@main
       - name: Install cargo-llvm-cov
@@ -42,7 +43,7 @@ jobs:
       - name: Install Nextest
         run: cargo binstall cargo-nextest
       - name: Run tests with coverage
-        run: cargo llvm-cov --branch nextest --profile ci --features embed-typst
+        run: cargo llvm-cov nextest --branch --profile ci --features embed-typst
       - name: Upload test results to Codecov
         if: ${{ !cancelled() }}
         uses: codecov/test-results-action@v1
