@@ -20,9 +20,7 @@ fuzz_target!(|data: (FuzzedElectionSummary, u16)| {
         .votes
         .iter()
         .enumerate()
-        .map(|(index, votes)| {
-            PoliticalGroupVotes::from_test_data_auto((index + 1) as u32, votes)
-        })
+        .map(|(index, votes)| PoliticalGroupVotes::from_test_data_auto((index + 1) as u32, votes))
         .collect();
 
     data.election_summary.voters_counts.poll_card_count = data.total_votes;
@@ -47,8 +45,20 @@ fuzz_target!(|data: (FuzzedElectionSummary, u16)| {
                 "{new_my_party_seats} is not greater or equal than {my_party_seats}\n{seats_per_party:?} -> {new_seats_per_party:?}",
             );
         }
-        (Err(ApportionmentError::DrawingOfLotsNotImplemented | ApportionmentError::AllListsExhausted), _) => {} // ignore DrawingOfLotsNotImplemented errors
-        (_, Err(ApportionmentError::DrawingOfLotsNotImplemented | ApportionmentError::AllListsExhausted)) => {} // ignore DrawingOfLotsNotImplemented errors
-	_ => panic!()
+        (
+            Err(
+                ApportionmentError::DrawingOfLotsNotImplemented
+                | ApportionmentError::AllListsExhausted,
+            ),
+            _,
+        ) => {} // ignore DrawingOfLotsNotImplemented errors
+        (
+            _,
+            Err(
+                ApportionmentError::DrawingOfLotsNotImplemented
+                | ApportionmentError::AllListsExhausted,
+            ),
+        ) => {} // ignore DrawingOfLotsNotImplemented errors
+        _ => panic!(),
     }
 });

@@ -20,7 +20,11 @@ fuzz_target!(|data: FuzzedElectionSummary| {
                 .iter()
                 .map(|v| Votes(v.iter().sum::<u32>().into()))
                 .collect::<Vec<Votes>>();
-            kiesraad_model::allocate(Seats::filled(data.seats.into()), &marc_votes, &mut marc_seats);
+            kiesraad_model::allocate(
+                Seats::filled(data.seats.into()),
+                &marc_votes,
+                &mut marc_seats,
+            );
             assert!(
                 seats
                     .iter()
@@ -32,7 +36,7 @@ fuzz_target!(|data: FuzzedElectionSummary| {
             );
         }
         Err(ApportionmentError::DrawingOfLotsNotImplemented) => {
-	    // check that abacus doesn't throw more dice than the reference
+            // check that abacus doesn't throw more dice than the reference
             let mut marc_seats = data
                 .votes
                 .iter()
@@ -43,20 +47,24 @@ fuzz_target!(|data: FuzzedElectionSummary| {
                 .iter()
                 .map(|v| Votes(v.iter().sum::<u32>().into()))
                 .collect::<Vec<Votes>>();
-            kiesraad_model::allocate(Seats::filled(data.seats.into()), &marc_votes, &mut marc_seats);
-	    while {
-		let mut retry = data
-		    .votes
-		    .iter()
-		    .map(|v| Seats::limited(v.len() as u64))
-                .collect::<Vec<Seats>>();
-		kiesraad_model::allocate(Seats::filled(data.seats.into()), &marc_votes, &mut retry);
+            kiesraad_model::allocate(
+                Seats::filled(data.seats.into()),
+                &marc_votes,
+                &mut marc_seats,
+            );
+            while {
+                let mut retry = data
+                    .votes
+                    .iter()
+                    .map(|v| Seats::limited(v.len() as u64))
+                    .collect::<Vec<Seats>>();
+                kiesraad_model::allocate(Seats::filled(data.seats.into()), &marc_votes, &mut retry);
 
-		retry == marc_seats
-	    } {}
-	}
-	Err(ApportionmentError::AllListsExhausted) => {
-	    // double check that the lists are indeed exhausted
+                retry == marc_seats
+            } {}
+        }
+        Err(ApportionmentError::AllListsExhausted) => {
+            // double check that the lists are indeed exhausted
             let mut marc_seats = data
                 .votes
                 .iter()
@@ -67,9 +75,16 @@ fuzz_target!(|data: FuzzedElectionSummary| {
                 .iter()
                 .map(|v| Votes(v.iter().sum::<u32>().into()))
                 .collect::<Vec<Votes>>();
-            kiesraad_model::allocate(Seats::filled(data.seats.into()), &marc_votes, &mut marc_seats);
-	    assert_ne!(u64::from(data.seats), marc_seats.iter().map(|x|x.count()).sum::<u64>());
-	}
-	_ => panic!(),
+            kiesraad_model::allocate(
+                Seats::filled(data.seats.into()),
+                &marc_votes,
+                &mut marc_seats,
+            );
+            assert_ne!(
+                u64::from(data.seats),
+                marc_seats.iter().map(|x| x.count()).sum::<u64>()
+            );
+        }
+        _ => panic!(),
     }
 });

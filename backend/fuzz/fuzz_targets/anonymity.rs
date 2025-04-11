@@ -24,9 +24,7 @@ fuzz_target!(|data: (FuzzedElectionSummary, Vec::<usize>)| {
     data.election_summary.political_group_votes = new_votes
         .iter()
         .enumerate()
-        .map(|(index, votes)| {
-            PoliticalGroupVotes::from_test_data_auto((index + 1) as u32, votes)
-        })
+        .map(|(index, votes)| PoliticalGroupVotes::from_test_data_auto((index + 1) as u32, votes))
         .collect();
 
     let new_alloc = seat_allocation(data.seats, &data.election_summary);
@@ -49,8 +47,20 @@ fuzz_target!(|data: (FuzzedElectionSummary, Vec::<usize>)| {
                 "{reordered:?} (was {seats_per_party:?}) is not equal to {new_seats_per_party:?}\n{reorder:?}",
             );
         }
-        (Err(ApportionmentError::DrawingOfLotsNotImplemented | ApportionmentError::AllListsExhausted), _) => {} // ignore
-        (_, Err(ApportionmentError::DrawingOfLotsNotImplemented | ApportionmentError::AllListsExhausted)) => {} // ignore
-	_ => panic!("error in fuzz test?")
+        (
+            Err(
+                ApportionmentError::DrawingOfLotsNotImplemented
+                | ApportionmentError::AllListsExhausted,
+            ),
+            _,
+        ) => {} // ignore
+        (
+            _,
+            Err(
+                ApportionmentError::DrawingOfLotsNotImplemented
+                | ApportionmentError::AllListsExhausted,
+            ),
+        ) => {} // ignore
+        _ => panic!("error in fuzz test?"),
     }
 });

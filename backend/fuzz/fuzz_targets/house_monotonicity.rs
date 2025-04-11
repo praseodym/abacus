@@ -26,6 +26,6 @@ fuzz_target!(|data: (FuzzedElectionSummary, u16)| {
         }
         (Err(ApportionmentError::DrawingOfLotsNotImplemented), _) => {} // ignore DrawingOfLotsNotImplemented errors
         (_, Err(ApportionmentError::DrawingOfLotsNotImplemented)) => {} // ignore DrawingOfLotsNotImplemented errors
-	_ => panic!()
+        _ => panic!(),
     }
 });

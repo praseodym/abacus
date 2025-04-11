@@ -8,7 +8,11 @@ fuzz_target!(|data: FuzzedElectionSummary| {
     match seat_allocation(data.seats, &data.election_summary) {
         Ok(alloc) => {
             let total_votes = data.total_votes;
-            let votes_per_party = data.votes.iter().map(|x| x.iter().sum::<u32>()).collect::<Vec<_>>();
+            let votes_per_party = data
+                .votes
+                .iter()
+                .map(|x| x.iter().sum::<u32>())
+                .collect::<Vec<_>>();
             assert_eq!(total_votes, votes_per_party.iter().sum::<u32>());
 
             let total_seats = data.seats;
@@ -39,7 +43,8 @@ fuzz_target!(|data: FuzzedElectionSummary| {
             let seats_upper_bound = votes_per_party
                 .iter()
                 .map(|v| {
-                    ((u64::from(total_seats) * u64::from(*v)) as f64 / (total_votes as f64)).ceil() as u64
+                    ((u64::from(total_seats) * u64::from(*v)) as f64 / (total_votes as f64)).ceil()
+                        as u64
                         + extra
                 })
                 .map(|x| x.try_into().unwrap())
@@ -74,7 +79,9 @@ fuzz_target!(|data: FuzzedElectionSummary| {
                 }
             }
         }
-        Err(ApportionmentError::DrawingOfLotsNotImplemented | ApportionmentError::AllListsExhausted) => {} // ignore
-	_ => panic!()
+        Err(
+            ApportionmentError::DrawingOfLotsNotImplemented | ApportionmentError::AllListsExhausted,
+        ) => {} // ignore
+        _ => panic!(),
     }
 });

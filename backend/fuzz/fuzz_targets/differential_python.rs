@@ -29,7 +29,9 @@ fuzz_target!(|data: FuzzedElectionSummary| {
 
             // absolute majority correction needed (Python currently doesn't do this yet)
             for (i, votes) in votes.enumerate() {
-                if 2 * u64::from(votes) > u64::from(data.total_votes) && 2 * py_seats[i] <= data.seats {
+                if 2 * u64::from(votes) > u64::from(data.total_votes)
+                    && 2 * py_seats[i] <= data.seats
+                {
                     return; // ignore
                 }
             }
@@ -42,7 +44,7 @@ fuzz_target!(|data: FuzzedElectionSummary| {
             );
         }
         Err(ApportionmentError::DrawingOfLotsNotImplemented) => {} // ignore
-        Err(ApportionmentError::AllListsExhausted) => {} // ignore
-        _ => panic!()
+        Err(ApportionmentError::AllListsExhausted) => {}           // ignore
+        _ => panic!(),
     }
 });
