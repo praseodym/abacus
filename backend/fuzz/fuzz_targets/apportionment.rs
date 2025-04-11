@@ -5,6 +5,7 @@ use abacus_fuzz::FuzzedElectionSummary;
 use libfuzzer_sys::fuzz_target;
 
 fuzz_target!(|data: FuzzedElectionSummary| {
+    let data = data.unrestricted();
     match seat_allocation(data.seats, &data.election_summary) {
         Ok(alloc) => {
             let total_votes = data.total_votes;

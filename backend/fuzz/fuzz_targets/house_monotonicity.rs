@@ -6,6 +6,7 @@ use libfuzzer_sys::fuzz_target;
 
 fuzz_target!(|data: (FuzzedElectionSummary, u16)| {
     let (data, added_seats) = data;
+    let data = data.unrestricted();
     let seats = data.seats + 18; // apportionment for < 19 seats is not monotonic
     let new_seats = seats + u32::from(added_seats);
 

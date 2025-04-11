@@ -9,6 +9,7 @@ use libfuzzer_sys::fuzz_target;
 
 fuzz_target!(|data: (FuzzedElectionSummary, u16)| {
     let (data, added_votes) = data;
+    let data = data.unrestricted();
     let alloc = seat_allocation(data.seats, &data.election_summary);
 
     // Add some votes to a party

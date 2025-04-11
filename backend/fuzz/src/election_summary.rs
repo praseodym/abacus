@@ -94,3 +94,13 @@ impl<'a> Arbitrary<'a> for FuzzedElectionSummary {
         })
     }
 }
+
+impl FuzzedElectionSummary {
+    pub fn unrestricted(mut self) -> FuzzedElectionSummary {
+	for list in &mut self.votes {
+	    list.resize(self.seats as usize, 0)
+	}
+
+	self
+    }
+}
