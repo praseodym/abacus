@@ -11,6 +11,7 @@ cargo-fuzz = true
 abacus = { path = ".." }
 libfuzzer-sys = "0.4"
 pyo3 = { version = "0.23", features = ["auto-initialize"] }
+jni = { version = "0.21.1", features = ["invocation"] }
 
 [dependencies.kiesraad-model]
 git = "https://github.com/squell/electionchecker.git"
@@ -69,6 +70,13 @@ test = false
 doc = false
 bench = false
 
+[[bin]]
+name = "differential_osv2020"
+path = "fuzz_targets/differential_osv2020.rs"
+test = false
+doc = false
+bench = false
+
 [features]
 odd-only = []
-simplified =[]
+simplified = []

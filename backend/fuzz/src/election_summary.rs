@@ -42,6 +42,12 @@ impl<'a> Arbitrary<'a> for FuzzedElectionSummary {
             return Err(Error::IncorrectFormat);
         }
 
+        for pg_votes in &votes {
+            if pg_votes.len() == 0 {
+                return Err(Error::IncorrectFormat);
+            }
+        }
+
         let total_votes: u64 = votes
             .iter()
             .map(|v| u64::from(v.iter().cloned().map(u64::from).sum::<u64>()))
@@ -97,10 +103,10 @@ impl<'a> Arbitrary<'a> for FuzzedElectionSummary {
 
 impl FuzzedElectionSummary {
     pub fn unrestricted(mut self) -> FuzzedElectionSummary {
-	for list in &mut self.votes {
-	    list.resize(self.seats as usize, 0)
-	}
+        for list in &mut self.votes {
+            list.resize(self.seats as usize, 0)
+        }
 
-	self
+        self
     }
 }
