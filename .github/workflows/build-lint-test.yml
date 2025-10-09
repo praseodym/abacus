@@ -40,6 +40,10 @@ jobs:
       - name: Build frontend
         run: npm run build
         working-directory: ./frontend
+        env:
+          INCLUDE_STORYBOOK_LINK: true
+      - name: Build Storybook
+        run: npm run build:storybook
       # Compile and test backend
       - name: Install musl
         run: sudo apt-get update && sudo apt-get install -y musl-tools
