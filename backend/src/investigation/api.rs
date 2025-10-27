@@ -88,6 +88,11 @@ async fn validate_and_get_committee_session(
     params(
         ("polling_station_id" = u32, description = "Polling station database id"),
     ),
+    security(
+        (),
+        ("my_auth" = ["read:items", "edit:items"]),
+        ("token_jwt" = [])
+    )
 )]
 async fn polling_station_investigation_create(
     _user: Coordinator,

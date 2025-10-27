@@ -3112,7 +3112,19 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {},
+          {
+            "my_auth": [
+              "read:items",
+              "edit:items"
+            ]
+          },
+          {
+            "token_jwt": []
+          }
+        ]
       },
       "delete": {
         "summary": "Delete an investigation for a polling station",
@@ -6829,6 +6841,13 @@
           }
         },
         "additionalProperties": false
+      }
+    },
+    "securitySchemes": {
+      "my_auth": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "ABACUS_SESSION"
       }
     }
   }

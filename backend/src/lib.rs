@@ -75,7 +75,29 @@ pub struct AppState {
 
 pub fn openapi_router() -> OpenApiRouter<AppState> {
     #[derive(utoipa::OpenApi)]
+    #[openapi(
+        modifiers(&SecurityAddon),
+    )]
     struct ApiDoc;
+
+    struct SecurityAddon;
+
+    impl utoipa::Modify for SecurityAddon {
+        fn modify(&self, openapi: &mut utoipa::openapi::OpenApi) {
+            if let Some(components) = openapi.components.as_mut() {
+                components.add_security_scheme(
+                    "my_auth",
+                    utoipa::openapi::security::SecurityScheme::ApiKey(
+                        utoipa::openapi::security::ApiKey::Cookie(
+                            utoipa::openapi::security::ApiKeyValue::new(String::from(
+                                "ABACUS_SESSION",
+                            )),
+                        ),
+                    ),
+                )
+            }
+        }
+    }
 
     let router = OpenApiRouter::with_openapi(ApiDoc::openapi())
         .merge(audit_log::router())
