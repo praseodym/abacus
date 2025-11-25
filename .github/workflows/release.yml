@@ -176,6 +176,7 @@ jobs:
           body: This is a release of Abacus ${{ github.ref_name }}, commit ${{ github.sha }} on ${{ env.BUILD_DATE }}
           tag_name: ${{ github.ref_name }}
           prerelease: false
+          draft: true
           target_commitish: "${{ github.sha }}"
           files: release/*
           token: ${{ secrets.GITHUB_TOKEN }}
