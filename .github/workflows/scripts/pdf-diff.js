@@ -130,6 +130,8 @@ exports.pdfDiff = ({ core }) => {
     const annotation = { title: "PDF output changed" };
     if (fs.existsSync(template)) {
       annotation.file = template;
+      // A line is required for the annotation to render against the file.
+      annotation.startLine = 1;
     }
     core.warning(
       `${relativePath}: ${status} — see the job summary for the visual diff.`,
