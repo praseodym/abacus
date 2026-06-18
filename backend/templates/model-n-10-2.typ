@@ -3,7 +3,7 @@
 #let input = json("inputs/model-n-10-2.json")
 
 #let is_municipality = (municipal, public_body) => if (
-  input.election.category == "Municipal"
+  input.election.category == "Municipality"
 ) { municipal } else { public_body }
 
 #let is_mobile = "polling_station_type" in input.polling_station and input.polling_station.polling_station_type == "Mobile"
