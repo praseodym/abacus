@@ -103,6 +103,20 @@ exports.pdfDiff = ({ core }) => {
 
   rows.push("");
 
-  core.setOutput("table", rows.join("\n"));
+  // Report the diff table via the workflow job summary (rendered on the run page).
+  // This needs no `pull-requests: write`, so it works under the read-only token
+  // that fork PRs receive.
+  if (process.env.GITHUB_STEP_SUMMARY) {
+    fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, `${rows.join("\n")}\n`);
+  }
+
+  // Surface a yellow warning annotation in the Checks tab when PDFs changed,
+  // without failing the job (PDF changes are usually intentional).
+  if (diffFound) {
+    core.warning(
+      "PDF output changed — see the job summary for the diff table and download link.",
+    );
+  }
+
   core.setOutput("diff_found", diffFound ? "1" : "0");
 };
