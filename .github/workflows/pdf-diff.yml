@@ -6,14 +6,12 @@ on:
 
 permissions:
   contents: read
-  pull-requests: write
 
 env:
   TZ: "Europe/Amsterdam"
 
 jobs:
   diff:
-    if: "!github.event.pull_request.head.repo.fork"
     name: Diff PDFs
     runs-on: ubuntu-latest
     defaults:
@@ -58,12 +56,24 @@ jobs:
         with:
           name: pdf-diffs
           path: backend/tmp-pdf-gen/diffs/
-      - name: Comment on PR with PDF diff summary and link to artifact
+      # The comment is posted by the privileged pdf-diff-comment.yml workflow
+      - name: Write comment metadata
         if: ${{ github.event_name == 'pull_request' }}
-        uses: marocchino/sticky-pull-request-comment@0ea0beb66eb9baf113663a64ec522f60e49231c0 #v3.0.4
         env:
-          DOWNLOAD_LINK: "[Download ZIP file containing PDF files with the visual differences](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts/${{ steps.artifact-upload.outputs['artifact-id'] }})"
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          DIFF_FOUND: ${{ steps.diff_summary.outputs.diff_found }}
+        run: |
+          mkdir -p tmp-pdf-gen/meta
+          echo "$PR_NUMBER" > tmp-pdf-gen/meta/pr-number.txt
+          echo "$DIFF_FOUND" > tmp-pdf-gen/meta/diff-found.txt
+      - name: Record diffs artifact id
+        if: ${{ steps.diff_summary.outputs.diff_found == '1' }}
+        env:
+          ARTIFACT_ID: ${{ steps.artifact-upload.outputs['artifact-id'] }}
+        run: echo "$ARTIFACT_ID" > tmp-pdf-gen/meta/diffs-artifact-id.txt
+      - name: Upload comment metadata
+        if: ${{ github.event_name == 'pull_request' }}
+        uses: actions/upload-artifact@v7
         with:
-          message: |
-            ${{ steps.diff_summary.outputs.table }}
-            ${{ steps.artifact-upload.outputs['artifact-id'] && env.DOWNLOAD_LINK }}
+          name: pdf-diff-meta
+          path: backend/tmp-pdf-gen/meta/

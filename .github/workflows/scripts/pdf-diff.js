@@ -103,6 +103,14 @@ exports.pdfDiff = ({ core }) => {
 
   rows.push("");
 
-  core.setOutput("table", rows.join("\n"));
+  const tableMarkdown = rows.join("\n");
+
+  // Persist the table so the privileged workflow_run comment workflow
+  // (pdf-diff-comment.yml) can read it across the workflow boundary.
+  const metaDir = path.join(pdfRoot, "meta");
+  fs.mkdirSync(metaDir, { recursive: true });
+  fs.writeFileSync(path.join(metaDir, "comment.md"), tableMarkdown);
+
+  core.setOutput("table", tableMarkdown);
   core.setOutput("diff_found", diffFound ? "1" : "0");
 };

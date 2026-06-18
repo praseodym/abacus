@@ -1,0 +1,52 @@
+name: PDF diff comment
+
+# Privileged half of the pdf-diff.yml workflow to post PR comment
+on:
+  workflow_run:
+    workflows: ["Track PDF model changes"] # must match pdf-diff.yml `name:`
+    types:
+      - completed
+
+permissions:
+  pull-requests: write
+  actions: read
+
+jobs:
+  comment:
+    if: >-
+      ${{ github.event.workflow_run.event == 'pull_request' &&
+          github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download comment metadata
+        uses: actions/download-artifact@v7
+        with:
+          name: pdf-diff-meta
+          path: meta
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build comment body
+        id: build
+        uses: actions/github-script@v9
+        env:
+          REPO: ${{ github.repository }}
+          RUN_ID: ${{ github.event.workflow_run.id }}
+        with:
+          script: |
+            const fs = require("node:fs");
+            const number = fs.readFileSync("meta/pr-number.txt", "utf8").trim();
+            const diffFound = fs.readFileSync("meta/diff-found.txt", "utf8").trim();
+            let message = fs.readFileSync("meta/comment.md", "utf8");
+            if (diffFound === "1" && fs.existsSync("meta/diffs-artifact-id.txt")) {
+              const id = fs.readFileSync("meta/diffs-artifact-id.txt", "utf8").trim();
+              const link = `https://github.com/${process.env.REPO}/actions/runs/${process.env.RUN_ID}/artifacts/${id}`;
+              message += `\n[Download ZIP file containing PDF files with the visual differences](${link})\n`;
+            }
+            fs.writeFileSync("comment-body.md", message);
+            core.setOutput("number", number);
+      - name: Comment on PR with PDF diff summary
+        uses: marocchino/sticky-pull-request-comment@0ea0beb66eb9baf113663a64ec522f60e49231c0 # v3.0.4
+        with:
+          header: pdf-diff
+          number: ${{ steps.build.outputs.number }}
+          path: comment-body.md
