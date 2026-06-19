@@ -59,4 +59,5 @@ jobs:
       - name: Add diff download link to job summary
         if: ${{ steps.diff_summary.outputs.diff_found == '1' }}
         run: |
-          echo "[Download ZIP file containing PDF files with the visual differences](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts/${{ steps.artifact-upload.outputs.artifact-id }})" >> "$GITHUB_STEP_SUMMARY"
+          url="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts/${{ steps.artifact-upload.outputs.artifact-id }}"
+          echo "[Download ZIP file containing PDF files with the visual differences]($url)" >> "$GITHUB_STEP_SUMMARY"

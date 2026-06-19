@@ -52,7 +52,6 @@ exports.pdfDiff = ({ core }) => {
   };
 
   let diffFound = false;
-  // PDFs that changed (diff/added/removed), used to annotate their source templates
   const changedFiles = [];
 
   // Iterate through every PDF present in either ref, run diff-pdf where applicable, and capture the status
@@ -108,19 +107,12 @@ exports.pdfDiff = ({ core }) => {
 
   rows.push("");
 
-  // Report the diff table via the workflow job summary (rendered on the run page).
-  // This needs no `pull-requests: write`, so it works under the read-only token
-  // that fork PRs receive.
+  // Report the diff table via the workflow job summary
   if (process.env.GITHUB_STEP_SUMMARY) {
     fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, `${rows.join("\n")}\n`);
   }
 
-  // Surface a yellow warning annotation for every changed PDF, attached to the
-  // typst template that produces it, so the warning shows up on the relevant file
-  // in the PR's "Files changed" tab (and the Checks tab). A generated PDF
-  // `<model>.pdf` is rendered from `backend/templates/<model>.typ` (see
-  // backend/src/bin/gen-pdf.rs). Annotations need no `pull-requests: write`, so
-  // this works under the read-only token that fork PRs receive.
+  // Add a yellow warning annotation for every changed PDF
   for (const { relativePath, status } of changedFiles) {
     const template = path.join(
       "backend",
@@ -130,11 +122,10 @@ exports.pdfDiff = ({ core }) => {
     const annotation = { title: "PDF output changed" };
     if (fs.existsSync(template)) {
       annotation.file = template;
-      // A line is required for the annotation to render against the file.
       annotation.startLine = 1;
     }
     core.warning(
-      `${relativePath}: ${status} — see the job summary for the visual diff.`,
+      `${relativePath}: ${status}, see the job summary for the visual diff.`,
       annotation,
     );
   }
