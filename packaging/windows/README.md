@@ -1,8 +1,10 @@
 # Windows installer
 
-The weekly end-to-end tests workflow compiles this installer on every run and publishes it as
-the `abacus-windows-installer-weekly` artifact. That build is not signed, so it is only
-suitable for testing. Follow the steps below to build a signed installer.
+The shared release build workflow (`.github/workflows/release-build.yml`) compiles this
+installer on every weekly end-to-end tests run and on every release. It is published as the
+`abacus-windows-installer` artifact, and releases attach it to the draft release as
+`abacussetup-<version>-unsigned.exe`. That build is not signed, so it is only suitable for
+testing. Follow the steps below to build a signed installer.
 
 Follow the next steps to compile the installer:
 
